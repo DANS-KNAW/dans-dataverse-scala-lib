@@ -16,7 +16,6 @@
 package nl.knaw.dans.lib.dataverse
 
 import java.net.URI
-
 import better.files.File
 import nl.knaw.dans.lib.dataverse.model.dataset.UpdateType.UpdateType
 import nl.knaw.dans.lib.dataverse.model.dataset.{ DatasetLatestVersion, DatasetVersion, FieldList, FileList, MetadataBlock, MetadataBlocks, PrivateUrlData }
@@ -26,6 +25,7 @@ import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.native.Serialization
 import org.json4s.{ DefaultFormats, Formats }
 
+import java.lang.Thread.sleep
 import scala.util.{ Failure, Try }
 
 /**
@@ -292,12 +292,31 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     postFileToTarget[FileList]("add", Option(dataFile), Option(Serialization.write(fileMedataData)))
   }
 
+  def awaitUnlock: Try[List[Lock]] = {
+    var retried = 0
+    var locks = getLocks
+    while (locks.isSuccess && locks.get.nonEmpty && retried < lockedRetryTimes) {
+      sleep(lockedRetryInterval)
+      locks = getLocks
+      retried += 1
+    }
+    locks
+  }
+
+  private def getLocks: Try[List[Lock]] = {
+    for {
+      response <- getLockings
+      locks <- response.data
+    } yield locks
+  }
+
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#dataset-locks]]
    * @return
    */
-  def getLocks: Try[DataverseResponse[List[Lock]]] = {
+  def getLockings: Try[DataverseResponse[List[Lock]]] = {
     trace(())
     getUnversionedFromTarget[List[Lock]]("locks")
   }
+
 }

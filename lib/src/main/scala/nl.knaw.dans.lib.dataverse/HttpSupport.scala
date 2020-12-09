@@ -191,32 +191,13 @@ private[dataverse] trait HttpSupport extends DebugEnhancedLogging {
       .headers(headersPlusMaybeApiKey)
       .params(paramsPlusMaybeUnblockKey)
       .timeout(connTimeoutMs = connectionTimeout, readTimeoutMs = readTimeout)
-    val completeRequest = optBasicAuthCredentials
+    val response = optBasicAuthCredentials
       .map { case (u, p) => request.auth(u, p) }
-      .getOrElse(request)
-    val response = getResponse(completeRequest)
+      .getOrElse(request).asBytes
     if (response.code >= 200 && response.code < 300) DataverseResponse(response)
     else throw DataverseException(response.code, new String(response.body, StandardCharsets.UTF_8), response)
   }
 
-  private def getResponse(request: HttpRequest): HttpResponse[Array[Byte]] = {
-    var retries = 0
-    var response = request.asBytes
-    while (retries < lockedRetryTimes && mustRetry(response)) {
-      Thread.sleep(lockedRetryInterval)
-      response = request.asBytes
-      retries += 1
-    }
-    response
-  }
-
-  private def mustRetry(response: HttpResponse[Array[Byte]]): Boolean = {
-    val messageBody = new String(response.body, StandardCharsets.UTF_8)
-    (response.code == 403 &&
-      (messageBody.contains("This dataset is locked") || messageBody.contains("Dataset cannot be edited due to dataset lock"))
-      || (response.code == 400 &&
-      messageBody.contains("Failed to add file to dataset")))
-  }
   /**
    * Normally the API-key is sent in a header
    *
