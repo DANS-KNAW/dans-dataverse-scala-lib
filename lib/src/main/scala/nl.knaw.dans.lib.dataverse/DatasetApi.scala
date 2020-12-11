@@ -292,29 +292,31 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     postFileToTarget[FileList]("add", Option(dataFile), Option(Serialization.write(fileMedataData)))
   }
 
-  def awaitUnlock: Try[List[Lock]] = {
+  def awaitUnlock: Try[Unit] = {
     var retried = 0
-    var locks = getLocks
-    while (locks.isSuccess && locks.get.nonEmpty && retried < lockedRetryTimes) {
-      sleep(lockedRetryInterval)
-      locks = getLocks
-      retried += 1
-    }
-    locks
-  }
-
-  private def getLocks: Try[List[Lock]] = {
-    for {
-      response <- getLockings
+    var locks = for {
+      response <- getLocks
       locks <- response.data
     } yield locks
+    logger.info(s"locks first $locks")
+    while (locks.isSuccess && locks.get.nonEmpty && retried < lockedRetryTimes) {
+      sleep(lockedRetryInterval)
+      logger.info(s"slept for $lockedRetryInterval milliseconds")
+      locks = for {
+        response <- getLocks
+        locks <- response.data
+      } yield locks
+      retried += 1
+    }
+    logger.info(s"locks last $locks")
+    locks.map(l => if (l.nonEmpty) Failure(LockException(s"Dataset $id is locked by ${ l.map(_.lockType).mkString(", ") }, ${ l.map(_.message).mkString(", ") }")) else ())
   }
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#dataset-locks]]
    * @return
    */
-  def getLockings: Try[DataverseResponse[List[Lock]]] = {
+  def getLocks: Try[DataverseResponse[List[Lock]]] = {
     trace(())
     getUnversionedFromTarget[List[Lock]]("locks")
   }

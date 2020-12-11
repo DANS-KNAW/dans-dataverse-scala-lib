@@ -28,7 +28,7 @@ object GetLocks extends App with DebugEnhancedLogging with BaseApp {
    */
   for (_ <- Range(1, 300)) {
     for {
-      response <- server.dataset(persistentId).getLockings
+      response <- server.dataset(persistentId).getLocks
       locks <- response.data
       _ = if (locks.nonEmpty)
             logger.info(s"Dataset is currently locked by: ${
