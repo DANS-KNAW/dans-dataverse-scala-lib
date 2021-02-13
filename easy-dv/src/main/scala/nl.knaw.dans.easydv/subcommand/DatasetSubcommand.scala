@@ -34,10 +34,10 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
 
   val view = addSimpleCommand(
     name = "view",
-    description = "Get JSON Representation of a Dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
 
   val exportMetadata = new Subcommand("export-metadata") {
-    descr("Export the metadata of the current published version of a dataset in various formats. See: https://guides.dataverse.org/en/latest/api/native-api.html#export-metadata-of-a-dataset-in-various-formats")
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#export-metadata-of-a-dataset-in-various-formats")
     val format: ScallopOption[String] = trailArg(
       name = "format",
       descr = "One of ddi, oai_ddi, dcterms, oai_dc, schema.org, OAI_ORE, Datacite, oai_datacite and dataverse_json",
@@ -47,16 +47,16 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
 
   val listFiles = addSimpleCommand(
     name = "list-files",
-    description = "Lists all the file metadata, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-files-in-a-dataset"
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#list-files-in-a-dataset"
   )
 
   val listMetadataBlocks = addSimpleCommand(
     name = "list-metadata-blocks",
-    description = "Lists all the metadata blocks and their content, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-all-metadata-blocks-for-a-dataset"
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#list-all-metadata-blocks-for-a-dataset"
   )
 
   val getMetadataBlock = new Subcommand("get-metadata-block") {
-    descr("Lists the metadata block named METADATA_BLOCK, for the given dataset and version")
+    descr("See: ")
     val name: ScallopOption[String] = trailArg(
       name = "name",
       descr = "name of the block",
@@ -67,11 +67,11 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
 
   val updateMetadata = addSimpleCommand(
     name = "update-metadata",
-    description = "Updates the metadata for a dataset. Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset"
+    description = "Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset"
   )
 
   val editMetadata = new Subcommand("edit-metadata") {
-    descr("Adds data to dataset fields that are blank or accept multiple values. Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata")
+    descr("Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata")
     val replace: ScallopOption[Boolean] = opt(
       name = "replace",
       descr = "replace existing data"
@@ -81,11 +81,11 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
 
   val deleteMedata = addSimpleCommand(
     name = "delete-metadata",
-    description = "Deletes fields from the dataset metadata. Reads teh input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-metadata"
+    description = "Reads th input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-metadata"
   )
 
   val publish = new Subcommand("publish") {
-    descr("Publishes the current draft. See: https://guides.dataverse.org/en/latest/api/native-api.html#publish-a-dataset")
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#publish-a-dataset")
     val major: ScallopOption[Boolean] = opt(name = "major", descr = "publish as major version")
     val minor: ScallopOption[Boolean] = opt(name = "minor", descr = "publish as minor version")
     mutuallyExclusive(major, minor)
@@ -95,18 +95,18 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
 
   val deleteDraft = addSimpleCommand(
     name = "delete-draft",
-    description = "Deletes the current draft of the dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-draft"
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-draft"
   )
 
   val setCitationDateField = new Subcommand("set-citation-date-field") {
-    descr("Sets the date field type to use in the citation. See: https://guides.dataverse.org/en/latest/api/native-api.html#set-citation-date-field-type-for-a-dataset")
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#set-citation-date-field-type-for-a-dataset")
     val field: ScallopOption[String] = trailArg(name = "field-name", descr = "name of the field to use")
   }
   addSubcommand(setCitationDateField)
 
   val revertCitationDateField = addSimpleCommand(
     name = "revert-citation-date-field",
-    description = "Reverts the date field type to use in the citation to the default. See: https://guides.dataverse.org/en/latest/api/native-api.html#revert-citation-date-field-type-to-default-for-dataset")
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#revert-citation-date-field-type-to-default-for-dataset")
 
   // TODO: list-role-assignments
   // TODO: assign-role
@@ -116,7 +116,7 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   // TODO: delete-private-url
 
   val addFile = new Subcommand("add-file") {
-    descr("Adds file data and/or metadata to a dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#add-a-file-to-a-dataset")
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#add-a-file-to-a-dataset")
     val dataFile: ScallopOption[Path] = trailArg(name = "data-file", descr = "data file (please, provide metadata JSON on the STDIN)", required = false)
     val metadata: ScallopOption[Boolean] = opt(name = "metadata-from-stdin", descr = "Read metadata from STDIN")
   }
