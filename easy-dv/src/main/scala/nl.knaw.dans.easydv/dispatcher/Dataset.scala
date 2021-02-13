@@ -17,6 +17,7 @@ package nl.knaw.dans.easydv.dispatcher
 
 import nl.knaw.dans.easydv.Command.FeedBackMessage
 import nl.knaw.dans.easydv.CommandLineOptions
+import nl.knaw.dans.lib.dataverse.model.dataset.UpdateType
 import nl.knaw.dans.lib.dataverse.{ DatasetApi, Version }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.apache.commons.lang.StringUtils
@@ -105,8 +106,16 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "delete-metadata"
         }
+      case commandLine.dataset :: (c @ commandLine.dataset.publish) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.publish(updateType = if (c.major()) UpdateType.major else UpdateType.minor)
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "publish"
+        }
 
-      // TODO: publish
       // TODO: delete-draft
       // TODO: set-citation-date-field
       // TODO: revert-citation-date-field

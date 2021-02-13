@@ -84,6 +84,16 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     description = "Deletes fields from the dataset metadata. Reads teh input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-metadata"
   )
 
+  val publish = new Subcommand("publish") {
+    descr("Publishes the current draft. See: https://guides.dataverse.org/en/latest/api/native-api.html#publish-a-dataset")
+    val major: ScallopOption[Boolean] = opt(name = "major", descr = "publish as major version")
+    val minor: ScallopOption[Boolean] = opt(name = "minor", descr = "publish as minor version")
+    mutuallyExclusive(major, minor)
+    requireAtLeastOne(major, minor)
+  }
+  addSubcommand(publish)
+
+
   // TODO: publish
   // TODO: delete-draft
   // TODO: set-citation-date-field
