@@ -54,6 +54,17 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     name = "list-metadata-blocks",
     description = "Lists all the metadata blocks and their content, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-all-metadata-blocks-for-a-dataset"
   )
+
+  val getMetadataBlock = new Subcommand(("get-metadata-block")) {
+    descr("Lists the metadata block named METADATA_BLOCK, for the given dataset and version")
+    val name: ScallopOption[String] = trailArg(
+      name = "name",
+      descr = "name of the block",
+      required = true
+    )
+  }
+  addSubcommand(getMetadataBlock)
+
   // TODO: get-metadata-block
   // TODO: update-metadata
   // TODO: edit-metadata

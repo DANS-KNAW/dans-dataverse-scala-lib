@@ -69,8 +69,14 @@ object Dataset extends DebugEnhancedLogging {
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "list-metadata-blocks"
+      case commandLine.dataset :: (c @ commandLine.dataset.getMetadataBlock) :: Nil =>
+        for {
+          response <- d.getMetadataBlock(c.name(), datasetSetVersion.getOrElse(Version.LATEST))
+          json <- response.json
+          _ = resultOutput.println(Serialization.writePretty(json))
+        } yield "get-metadata-block"
 
-      // TODO: get-metadata-block
+
       // TODO: update-metadata
       // TODO: edit-metadata
       // TODO: delete-metadata
