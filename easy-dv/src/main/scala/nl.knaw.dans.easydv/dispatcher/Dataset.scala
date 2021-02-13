@@ -30,24 +30,20 @@ import scala.util.{ Failure, Success, Try }
 object Dataset extends DebugEnhancedLogging {
   private implicit val jsonFormats: Formats = DefaultFormats
 
-  def dispatch(commandLine: CommandLineOptions, d: DatasetApi)(implicit resultOutput: PrintStream): Try[FeedBackMessage] = {
+  def dispatch(commandLine: CommandLineOptions, d: DatasetApi, datasetSetVersion: Option[Version])(implicit resultOutput: PrintStream): Try[FeedBackMessage] = {
     trace(())
     commandLine.subcommands match {
-      case commandLine.dataset :: (c @ commandLine.dataset.view) :: Nil =>
+      case (ds @ commandLine.dataset) :: commandLine.dataset.view :: Nil =>
         for {
           response <-
-            if (c.all()) d.viewAllVersions()
-            else d.view(version =
-              if (c.draft()) Version.DRAFT
-              else if (c.latestPublished()) Version.LATEST_PUBLISHED
-                   else if (c.latest()) Version.LATEST
-                        else if (c.version.isDefined) Version(c.version())
-                             else Version.LATEST)
+            if (ds.all()) d.viewAllVersions()
+            else d.view(version = datasetSetVersion.getOrElse(Version.LATEST))
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "view"
       case commandLine.dataset :: (c @ commandLine.dataset.exportMetadata) :: Nil =>
-        if (List("schema.org", "OAI_ORE", "dataverse_json").contains(c.format())) {
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else if (List("schema.org", "OAI_ORE", "dataverse_json").contains(c.format())) {
           for {
             response <- d.exportMetadata(c.format())
             json <- response.json
@@ -61,8 +57,14 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(s)
           } yield "export-metadata"
         }
+      case commandLine.dataset :: commandLine.dataset.listFiles :: Nil =>
+        for {
+          response <- d.listFiles(datasetSetVersion.getOrElse(Version.LATEST))
+          json <- response.json
+          _ = resultOutput.println(Serialization.writePretty(json))
+        } yield "list-files"
 
-      // TODO: list-files
+
       // TODO: list-metadata-blocks
       // TODO: get-metadata-block
       // TODO: update-metadata

@@ -25,18 +25,16 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   descr("Operations on a dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#datasets")
   val id: ScallopOption[String] = trailArg("id",
     descr = "dataset identifier; if it consists of only numbers, it is taken to be a database ID, otherwise as a persistent ID")
+  val version: ScallopOption[String] = opt(name = "version", descr = "specific version of the dataset")
+  val latest: ScallopOption[Boolean] = opt(name = "latest", descr = "latest version of the dataset (default)")
+  val latestPublished: ScallopOption[Boolean] = opt(name = "latest-published", short = 'p', descr = "latest published version of the dataset")
+  val draft: ScallopOption[Boolean] = opt(name = "draft", descr = "the draft version of the dataset")
+  val all: ScallopOption[Boolean] = opt(name = "all", descr = "all versions versions of the dataset")
+  mutuallyExclusive(version, latestPublished, latest, draft, all)
 
-  // TODO: add version parameter
-  val view = new Subcommand("view") {
-    descr("Get JSON Representation of a Dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
-    val version: ScallopOption[String] = opt(name = "version", descr = "specific version to view")
-    val latest: ScallopOption[Boolean] = opt(name = "latest", descr = "view latest (default)")
-    val latestPublished: ScallopOption[Boolean] = opt(name = "latest-published", short = 'p',  descr = "view latest published")
-    val draft: ScallopOption[Boolean] = opt(name = "draft", descr = "view the draft version")
-    val all: ScallopOption[Boolean] = opt(name = "all", descr = "view all versions")
-    mutuallyExclusive(version, latestPublished, latest, draft, all)
-  }
-  addSubcommand(view)
+  val view = addSimpleCommand(
+    name = "view",
+    description = "Get JSON Representation of a Dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
 
   val exportMetadata = new Subcommand("export-metadata") {
     descr("Export the metadata of the current published version of a dataset in various formats. See: https://guides.dataverse.org/en/latest/api/native-api.html#export-metadata-of-a-dataset-in-various-formats")
@@ -47,8 +45,11 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(exportMetadata)
 
-  // TODO: export-metadata
-  // TODO: list-files
+  val listFiles = addSimpleCommand(
+    name = "list-files",
+    description = "Lists all the file metadata, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-files-in-a-dataset"
+  )
+
   // TODO: list-metadata-blocks
   // TODO: get-metadata-block
   // TODO: update-metadata
