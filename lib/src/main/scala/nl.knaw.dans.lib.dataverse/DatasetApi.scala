@@ -136,13 +136,25 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
    * Creates or overwrites the current draft's metadata completely.
    *
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset]]
+   * @param s JSON document containing the updated metadata blocks
+   * @return
+   */
+  def updateMetadata(s: String): Try[DataverseResponse[DatasetVersion]] = {
+    trace(s)
+    // Cheating with endPoint here, because the only version that can be updated is :draft anyway
+    putToTarget[DatasetVersion]("versions/:draft", s)
+  }
+
+  /**
+   * Creates or overwrites the current draft's metadata completely.
+   *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset]]
    * @param metadataBlocks map from metadata block id to `MetadataBlock`
    * @return
    */
   def updateMetadata(metadataBlocks: MetadataBlocks): Try[DataverseResponse[DatasetVersion]] = {
     trace(metadataBlocks)
-    // Cheating with endPoint here, because the only version that can be updated is :draft anyway
-    putToTarget[DatasetVersion]("versions/:draft", Serialization.write(Map("metadataBlocks" -> metadataBlocks)))
+    updateMetadata(Serialization.write(Map("metadataBlocks" -> metadataBlocks)))
   }
 
   /**

@@ -65,7 +65,11 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(getMetadataBlock)
 
-  // TODO: get-metadata-block
+  val updateMetadata = addSimpleCommand(
+    name = "update-metadata",
+    description = "Updates the metadata for a dataset. Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset"
+  )
+
   // TODO: update-metadata
   // TODO: edit-metadata
   // TODO: delete-metadata

@@ -75,7 +75,16 @@ object Dataset extends DebugEnhancedLogging {
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "get-metadata-block"
-
+      case commandLine.dataset :: (c @ commandLine.dataset.updateMetadata) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            s <- getStringFromStd
+            response <- d.updateMetadata(s)
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "update-metadata"
+        }
 
       // TODO: update-metadata
       // TODO: edit-metadata
