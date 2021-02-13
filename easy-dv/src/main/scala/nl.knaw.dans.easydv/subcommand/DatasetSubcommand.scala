@@ -98,10 +98,12 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     description = "Deletes the current draft of the dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-draft"
   )
 
+  val setCitationDateField = new Subcommand("set-citation-date-field") {
+    descr("Sets the date field type to use in the citation. See: https://guides.dataverse.org/en/latest/api/native-api.html#set-citation-date-field-type-for-a-dataset")
+    val field: ScallopOption[String] = trailArg(name = "field-name", descr = "name of the field to use")
+  }
+  addSubcommand(setCitationDateField)
 
-
-  // TODO: delete-draft
-  // TODO: set-citation-date-field
   // TODO: revert-citation-date-field
   // TODO: list-role-assignments
   // TODO: assign-role

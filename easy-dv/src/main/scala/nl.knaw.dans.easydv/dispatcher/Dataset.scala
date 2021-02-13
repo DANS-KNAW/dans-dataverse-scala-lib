@@ -124,8 +124,16 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "delete-draft"
         }
+      case commandLine.dataset :: (c @ commandLine.dataset.setCitationDateField) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.setCitationDateField(c.field())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "set-citation-date-field"
+        }
 
-      // TODO: set-citation-date-field
       // TODO: revert-citation-date-field
       // TODO: list-role-assignments
       // TODO: assign-role
