@@ -56,7 +56,7 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   )
 
   val getMetadataBlock = new Subcommand("get-metadata-block") {
-    descr("See: ")
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#list-single-metadata-block-for-a-dataset")
     val name: ScallopOption[String] = trailArg(
       name = "name",
       descr = "name of the block",
