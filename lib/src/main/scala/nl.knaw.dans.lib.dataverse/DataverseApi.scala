@@ -281,6 +281,37 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
   }
 
   /**
+   * Import a dataset with an existing persistent identifier, which must be provided as a separate parameter. The dataset
+   * will be imported as a draft.
+   *
+   * @param s   string with the JSON definition of the dataset
+   * @param pid the PID
+   * @return
+   */
+  def importDataset(s: String, pid: String): Try[DataverseResponse[DatasetCreationResult]] = {
+    importDataset(s, pid, autoPublish = false)
+  }
+
+  /**
+   * Import a dataset with an existing persistent identifier, which must be provided as a separate parameter. The dataset
+   * will be automatically published after import if `autoPublish` is set to `true`.
+   *
+   * @param s           string with the JSON definition of the dataset
+   * @param pid         the PID
+   * @param autoPublish whether to immediately publish the dataset
+   * @return
+   */
+  def importDataset(s: String, pid: String, autoPublish: Boolean): Try[DataverseResponse[DatasetCreationResult]] = {
+    trace(s, autoPublish)
+    for {
+      response <- postJson[DatasetCreationResult](
+        subPath = s"dataverses/$dvId/datasets/:import",
+        body = s,
+        params = Map("pid" -> pid, "release" -> autoPublish.toString))
+    } yield response
+  }
+
+  /**
    * Import a dataset with an existing persistent identifier, which can be provided as a parameter or in the [[Dataset]] object's
    * protocol, authority and identifier fields. (E.g. for a DOI: protocol = "doi", authority = "10.5072", identifier = "FK2/12345".)
    *
@@ -296,11 +327,7 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
       _ = if (pid.isEmpty) throw new IllegalArgumentException("PID must be provided either as parameter or in the (protocol, authority, identifier) fields of the dataset model object")
       _ = debug(s"Found pid = $pid")
       jsonString <- serializeAsJson(dataset, logger.underlying.isDebugEnabled)
-      response <- postJson[DatasetCreationResult](
-        subPath = s"dataverses/$dvId/datasets/:import",
-        body = jsonString,
-        params = Map("pid" -> pid,
-          "release" -> autoPublish.toString))
+      response <- importDataset(jsonString, pid, autoPublish)
     } yield response
   }
 

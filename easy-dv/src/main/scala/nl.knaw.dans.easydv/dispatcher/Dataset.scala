@@ -17,7 +17,7 @@ package nl.knaw.dans.easydv.dispatcher
 
 import nl.knaw.dans.easydv.Command.FeedBackMessage
 import nl.knaw.dans.easydv.CommandLineOptions
-import nl.knaw.dans.lib.dataverse.DatasetApi
+import nl.knaw.dans.lib.dataverse.{ DatasetApi, Version }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.apache.commons.lang.StringUtils
 import org.json4s.native.Serialization
@@ -33,15 +33,21 @@ object Dataset extends DebugEnhancedLogging {
   def dispatch(commandLine: CommandLineOptions, d: DatasetApi)(implicit resultOutput: PrintStream): Try[FeedBackMessage] = {
     trace(())
     commandLine.subcommands match {
-      case commandLine.dataset :: commandLine.dataset.view :: Nil =>
+      case commandLine.dataset :: (v @ commandLine.dataset.view) :: Nil =>
         for {
-          response <- d.view()
+          response <-
+            if (v.all()) d.viewAllVersions()
+            else d.view(version =
+              if (v.draft()) Version.DRAFT
+              else if (v.latestPublished()) Version.LATEST_PUBLISHED
+                   else if (v.latest()) Version.LATEST
+                        else if (v.version.isDefined) Version(v.version())
+                             else Version.LATEST)
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "view"
 
 
-      // TODO: view-all-versions
       // TODO: export-metadata
       // TODO: list-files
       // TODO: list-metadata-blocks

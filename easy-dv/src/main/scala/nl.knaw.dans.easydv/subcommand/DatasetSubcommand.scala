@@ -27,9 +27,16 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     descr = "dataset identifier; if it consists of only numbers, it is taken to be a database ID, otherwise as a persistent ID")
 
   // TODO: add version parameter
-  val view = addSimpleCommand(
-    name = "view",
-    description = "Get JSON Representation of a Dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
+  val view = new Subcommand("view") {
+    descr("Get JSON Representation of a Dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#get-json-representation-of-a-dataset")
+    val version: ScallopOption[String] = opt(name = "version", descr = "specific version to view")
+    val latest: ScallopOption[Boolean] = opt(name = "latest", descr = "view latest (default)")
+    val latestPublished: ScallopOption[Boolean] = opt(name = "latest-published", short = 'p',  descr = "view latest published")
+    val draft: ScallopOption[Boolean] = opt(name = "draft", descr = "view the draft version")
+    val all: ScallopOption[Boolean] = opt(name = "all", descr = "view all versions")
+    mutuallyExclusive(version, latestPublished, latest, draft, all)
+  }
+  addSubcommand(view)
 
   // TODO: view-all-versions
   // TODO: export-metadata
