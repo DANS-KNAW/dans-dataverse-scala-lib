@@ -93,8 +93,13 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(publish)
 
+  val deleteDraft = addSimpleCommand(
+    name = "delete-draft",
+    description = "Deletes the current draft of the dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-draft"
+  )
 
-  // TODO: publish
+
+
   // TODO: delete-draft
   // TODO: set-citation-date-field
   // TODO: revert-citation-date-field

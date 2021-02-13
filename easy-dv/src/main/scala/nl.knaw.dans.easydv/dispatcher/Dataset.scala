@@ -115,8 +115,16 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "publish"
         }
+      case commandLine.dataset :: commandLine.dataset.deleteDraft :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.deleteDraft()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "delete-draft"
+        }
 
-      // TODO: delete-draft
       // TODO: set-citation-date-field
       // TODO: revert-citation-date-field
       // TODO: list-role-assignments
