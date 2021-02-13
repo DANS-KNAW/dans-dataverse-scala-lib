@@ -50,7 +50,10 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     description = "Lists all the file metadata, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-files-in-a-dataset"
   )
 
-  // TODO: list-metadata-blocks
+  val listMetadataBlocks = addSimpleCommand(
+    name = "list-metadata-blocks",
+    description = "Lists all the metadata blocks and their content, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-all-metadata-blocks-for-a-dataset"
+  )
   // TODO: get-metadata-block
   // TODO: update-metadata
   // TODO: edit-metadata

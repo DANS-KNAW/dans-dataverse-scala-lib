@@ -63,9 +63,13 @@ object Dataset extends DebugEnhancedLogging {
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "list-files"
+      case commandLine.dataset :: commandLine.dataset.listMetadataBlocks :: Nil =>
+        for {
+          response <- d.listMetadataBlocks(datasetSetVersion.getOrElse(Version.LATEST))
+          json <- response.json
+          _ = resultOutput.println(Serialization.writePretty(json))
+        } yield "list-metadata-blocks"
 
-
-      // TODO: list-metadata-blocks
       // TODO: get-metadata-block
       // TODO: update-metadata
       // TODO: edit-metadata
