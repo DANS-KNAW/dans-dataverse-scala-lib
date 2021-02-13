@@ -133,8 +133,16 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "set-citation-date-field"
         }
+      case commandLine.dataset :: (c @ commandLine.dataset.revertCitationDateField) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.revertCitationDateField()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "revert-citation-date-field"
+        }
 
-      // TODO: revert-citation-date-field
       // TODO: list-role-assignments
       // TODO: assign-role
       // TODO: delete-role-assignment

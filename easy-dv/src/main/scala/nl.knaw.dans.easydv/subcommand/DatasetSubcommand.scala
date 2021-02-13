@@ -104,7 +104,10 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(setCitationDateField)
 
-  // TODO: revert-citation-date-field
+  val revertCitationDateField = addSimpleCommand(
+    name = "revert-citation-date-field",
+    description = "Reverts the date field type to use in the citation to the default. See: https://guides.dataverse.org/en/latest/api/native-api.html#revert-citation-date-field-type-to-default-for-dataset")
+
   // TODO: list-role-assignments
   // TODO: assign-role
   // TODO: delete-role-assignment
