@@ -38,7 +38,15 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(view)
 
-  // TODO: view-all-versions
+  val exportMetadata = new Subcommand("export-metadata") {
+    descr("Export the metadata of the current published version of a dataset in various formats. See: https://guides.dataverse.org/en/latest/api/native-api.html#export-metadata-of-a-dataset-in-various-formats")
+    val format: ScallopOption[String] = trailArg(
+      name = "format",
+      descr = "One of ddi, oai_ddi, dcterms, oai_dc, schema.org, OAI_ORE, Datacite, oai_datacite and dataverse_json",
+      required = true)
+  }
+  addSubcommand(exportMetadata)
+
   // TODO: export-metadata
   // TODO: list-files
   // TODO: list-metadata-blocks

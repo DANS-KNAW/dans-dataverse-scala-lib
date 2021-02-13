@@ -33,22 +33,35 @@ object Dataset extends DebugEnhancedLogging {
   def dispatch(commandLine: CommandLineOptions, d: DatasetApi)(implicit resultOutput: PrintStream): Try[FeedBackMessage] = {
     trace(())
     commandLine.subcommands match {
-      case commandLine.dataset :: (v @ commandLine.dataset.view) :: Nil =>
+      case commandLine.dataset :: (c @ commandLine.dataset.view) :: Nil =>
         for {
           response <-
-            if (v.all()) d.viewAllVersions()
+            if (c.all()) d.viewAllVersions()
             else d.view(version =
-              if (v.draft()) Version.DRAFT
-              else if (v.latestPublished()) Version.LATEST_PUBLISHED
-                   else if (v.latest()) Version.LATEST
-                        else if (v.version.isDefined) Version(v.version())
+              if (c.draft()) Version.DRAFT
+              else if (c.latestPublished()) Version.LATEST_PUBLISHED
+                   else if (c.latest()) Version.LATEST
+                        else if (c.version.isDefined) Version(c.version())
                              else Version.LATEST)
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "view"
+      case commandLine.dataset :: (c @ commandLine.dataset.exportMetadata) :: Nil =>
+        if (List("schema.org", "OAI_ORE", "dataverse_json").contains(c.format())) {
+          for {
+            response <- d.exportMetadata(c.format())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "export-metadata"
+        }
+        else {
+          for {
+            response <- d.exportMetadata(c.format())
+            s <- response.string
+            _ = resultOutput.println(s)
+          } yield "export-metadata"
+        }
 
-
-      // TODO: export-metadata
       // TODO: list-files
       // TODO: list-metadata-blocks
       // TODO: get-metadata-block
