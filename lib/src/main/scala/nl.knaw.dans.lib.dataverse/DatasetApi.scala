@@ -157,21 +157,62 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     updateMetadata(Serialization.write(Map("metadataBlocks" -> metadataBlocks)))
   }
 
+
+  /**
+   * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified
+   * fields must be either currently empty or allow multiple values. Replaces existing data.
+   *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata]]
+   * @param s JSON document containing the edits to perform
+   * @return
+   */
+  def editMetadata(s: String): Try[DataverseResponse[DatasetVersion]] = {
+    trace(s)
+    editMetadata(s, true)
+  }
+
+  /**
+   * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified
+   * fields must be either currently empty or allow multiple values.
+   *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata]]
+   * @param s JSON document containing the edits to perform
+   * @param replace whether to replace existing values
+   * @return
+   */
+  def editMetadata(s: String, replace: Boolean): Try[DataverseResponse[DatasetVersion]] = {
+    trace(s, replace)
+    putToTarget("editMetadata",
+      s,
+      if (replace) Map("replace" -> "true")
+      else Map.empty) // Sic! any value for "replace" is interpreted by Dataverse as "true", even "replace=false"
+  }
+
   /**
    * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified
    * fields must be either currently empty or allow multiple values.
    *
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata]]
    * @param fields  list of fields to edit
-   * @param replace wether to replace existing values
+   * @param replace whether to replace existing values
    * @return
    */
   def editMetadata(fields: FieldList, replace: Boolean = true): Try[DataverseResponse[DatasetVersion]] = {
     trace(fields)
-    putToTarget("editMetadata",
-      Serialization.write(fields),
-      if (replace) Map("replace" -> "true")
-      else Map.empty) // Sic! any value for "replace" is interpreted by Dataverse as "true", even "replace=false"
+    editMetadata(Serialization.write(fields), replace)
+  }
+
+  /**
+   * Deletes one or more values from the current draft's metadata. Note that the delete will fail if the
+   * result would leave required fields empty.
+   *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-metadata]]
+   * @param s JSON document describing what to delete
+   * @return
+   */
+  def deleteMetadata(s: String): Try[DataverseResponse[DatasetVersion]] = {
+    trace(s)
+    putToTarget("deleteMetadata", s)
   }
 
   /**
@@ -184,7 +225,7 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
    */
   def deleteMetadata(fields: FieldList): Try[DataverseResponse[DatasetVersion]] = {
     trace(fields)
-    putToTarget("deleteMetadata", Serialization.write(fields))
+    deleteMetadata(Serialization.write(fields))
   }
 
   /**

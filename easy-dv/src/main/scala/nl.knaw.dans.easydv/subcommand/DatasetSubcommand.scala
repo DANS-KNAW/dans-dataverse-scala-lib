@@ -55,7 +55,7 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     description = "Lists all the metadata blocks and their content, for the given dataset and version. See: https://guides.dataverse.org/en/latest/api/native-api.html#list-all-metadata-blocks-for-a-dataset"
   )
 
-  val getMetadataBlock = new Subcommand(("get-metadata-block")) {
+  val getMetadataBlock = new Subcommand("get-metadata-block") {
     descr("Lists the metadata block named METADATA_BLOCK, for the given dataset and version")
     val name: ScallopOption[String] = trailArg(
       name = "name",
@@ -70,9 +70,20 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     description = "Updates the metadata for a dataset. Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#update-metadata-for-a-dataset"
   )
 
-  // TODO: update-metadata
-  // TODO: edit-metadata
-  // TODO: delete-metadata
+  val editMetadata = new Subcommand("edit-metadata") {
+    descr("Adds data to dataset fields that are blank or accept multiple values. Reads the input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata")
+    val replace: ScallopOption[Boolean] = opt(
+      name = "replace",
+      descr = "replace existing data"
+    )
+  }
+  addSubcommand(editMetadata)
+
+  val deleteMedata = addSimpleCommand(
+    name = "delete-metadata",
+    description = "Deletes fields from the dataset metadata. Reads teh input JSON from STDIN. See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-dataset-metadata"
+  )
+
   // TODO: publish
   // TODO: delete-draft
   // TODO: set-citation-date-field

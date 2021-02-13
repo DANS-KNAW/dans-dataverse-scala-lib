@@ -85,10 +85,27 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "update-metadata"
         }
+      case commandLine.dataset :: (c @ commandLine.dataset.editMetadata) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            s <- getStringFromStd
+            response <- d.editMetadata(s, c.replace())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "edit-metadata"
+        }
+      case commandLine.dataset :: commandLine.dataset.deleteMedata :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            s <- getStringFromStd
+            response <- d.deleteMetadata(s)
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "delete-metadata"
+        }
 
-      // TODO: update-metadata
-      // TODO: edit-metadata
-      // TODO: delete-metadata
       // TODO: publish
       // TODO: delete-draft
       // TODO: set-citation-date-field
