@@ -21,7 +21,7 @@ import org.rogach.scallop.{ ScallopOption, Subcommand }
 import java.nio.file.Path
 
 class DatasetSubcommand extends AbstractSubcommand("dataset") {
-  shortSubcommandsHelp(true)
+  shortSubcommandsHelp(false)
   descr("Operations on a dataset. See: https://guides.dataverse.org/en/latest/api/native-api.html#datasets")
   val id: ScallopOption[String] = trailArg("id",
     descr = "dataset identifier; if it consists of only numbers, it is taken to be a database ID, otherwise as a persistent ID")
@@ -108,17 +108,37 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
     name = "revert-citation-date-field",
     description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#revert-citation-date-field-type-to-default-for-dataset")
 
-  // TODO: list-role-assignments
-  // TODO: assign-role
-  // TODO: delete-role-assignment
-  // TODO: create-private-url
-  // TODO: get-private-url
-  // TODO: delete-private-url
+  val listRoleAssignments = addSimpleCommand(
+    name = "list-role-assignments",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#list-role-assignments-in-a-dataset")
+
+  val assignRole = addSimpleCommand(
+    name = "assign-role",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#assign-a-new-role-on-a-dataset")
+
+  val deleteRoleAssignment = new Subcommand("delete-role-assignment") {
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-role-assignment-from-a-dataset")
+    val id: ScallopOption[Int] = trailArg(name = "role-id", descr = "the ide of the role, use list-role-assignments to retrieve", required = false)
+  }
+  addSubcommand(deleteRoleAssignment)
+
+  val createPrivateUrl = addSimpleCommand(
+    name = "create-private-url",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#create-a-private-url-for-a-dataset")
+
+  val getPrivateUrl = addSimpleCommand(
+    name = "get-private-url",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#get-the-private-url-for-a-dataset")
+
+  val deletePrivateUrl = addSimpleCommand(
+    name = "delete-private-url",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-the-private-url-from-a-dataset")
 
   val addFile = new Subcommand("add-file") {
     descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#add-a-file-to-a-dataset")
-    val dataFile: ScallopOption[Path] = trailArg(name = "data-file", descr = "data file (please, provide metadata JSON on the STDIN)", required = false)
+    val dataFile: ScallopOption[Path] = trailArg(name = "data-file", descr = "data file", required = false)
     val metadata: ScallopOption[Boolean] = opt(name = "metadata-from-stdin", descr = "Read metadata from STDIN")
+    requireAtLeastOne(dataFile, metadata)
   }
   addSubcommand(addFile)
 

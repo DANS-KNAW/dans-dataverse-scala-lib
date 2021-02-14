@@ -133,7 +133,7 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "set-citation-date-field"
         }
-      case commandLine.dataset :: (c @ commandLine.dataset.revertCitationDateField) :: Nil =>
+      case commandLine.dataset :: commandLine.dataset.revertCitationDateField :: Nil =>
         if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
         else {
           for {
@@ -142,14 +142,61 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "revert-citation-date-field"
         }
-
-      // TODO: list-role-assignments
-      // TODO: assign-role
-      // TODO: delete-role-assignment
-      // TODO: create-private-url
-      // TODO: get-private-url
-      // TODO: delete-private-url
-
+      case commandLine.dataset :: commandLine.dataset.listRoleAssignments :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.listRoleAssignments()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "list-role-assignments"
+        }
+      case commandLine.dataset :: commandLine.dataset.assignRole :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            s <- getStringFromStd
+            response <- d.assignRole(s)
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "assign-role"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.deleteRoleAssignment) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.deleteRoleAssignment(c.id())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "delete-role-assignment"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.createPrivateUrl) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.createPrivateUrl()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "create-private-url"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.getPrivateUrl) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.getPrivateUrl
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "get-private-url"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.deletePrivateUrl) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.deletePrivateUrl()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "delete-private-url"
+        }
       case commandLine.dataset :: commandLine.dataset.addFile :: Nil =>
         for {
           metadata <- if (commandLine.dataset.addFile.metadata()) getStringFromStd

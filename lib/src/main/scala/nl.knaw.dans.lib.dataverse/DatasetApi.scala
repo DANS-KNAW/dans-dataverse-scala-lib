@@ -287,12 +287,22 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#assign-a-new-role-on-a-dataset]]
+   * @param s JSON document describing the assignment
+   * @return
+   */
+  def assignRole(s: String): Try[DataverseResponse[RoleAssignmentReadOnly]] = {
+    trace(s)
+    postJsonToTarget[RoleAssignmentReadOnly]("assignments", s)
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#assign-a-new-role-on-a-dataset]]
    * @param roleAssignment object describing the assignment
    * @return
    */
   def assignRole(roleAssignment: RoleAssignment): Try[DataverseResponse[RoleAssignmentReadOnly]] = {
     trace(roleAssignment)
-    postJsonToTarget[RoleAssignmentReadOnly]("assignments", Serialization.write(roleAssignment))
+    assignRole(Serialization.write(roleAssignment))
   }
 
   /**
