@@ -296,6 +296,7 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
    * Import a dataset with an existing persistent identifier, which must be provided as a separate parameter. The dataset
    * will be automatically published after import if `autoPublish` is set to `true`.
    *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#import-a-dataset-into-a-dataverse]]
    * @param s           string with the JSON definition of the dataset
    * @param pid         the PID
    * @param autoPublish whether to immediately publish the dataset
@@ -356,12 +357,101 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
    * they all operate on a dataverse, so we add them to the dataverse API.
    */
 
-  // TODO: create-group
-  // TODO: list-groups
-  // TODO: view-group
-  // TODO: update-group
-  // TODO: delete-group
-  // TODO: add-role-assignee-to-group
-  // TODO: add-multiple-role-assignees-to-group
-  // TODO: remove-role-assignee-from-group
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#create-new-explicit-group]]
+   * @param s JSON document with the definition of the group
+   * @return
+   */
+  def createGroup(s: String): Try[DataverseResponse[Group]] = {
+    trace(s)
+    postJson[Group](s"dataverses/$dvId/groups", s)
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#create-new-explicit-group]]
+   * @param group model object of the group
+   * @return
+   */
+  def createGroup(group: Group): Try[DataverseResponse[Group]] = {
+    trace(group)
+    for {
+      jsonString <- serializeAsJson(group, logger.underlying.isDebugEnabled)
+      response <- createGroup(jsonString)
+    } yield response
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#list-explicit-groups-in-a-dataverse]]
+   * @return
+   */
+  def listGroups(): Try[DataverseResponse[List[Group]]] = {
+    trace(())
+    get[List[Group]](s"dataverses/$dvId/groups")
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#show-single-group-in-a-dataverse]]
+   * @return
+   */
+  def getGroup(alias: String): Try[DataverseResponse[Group]] = {
+    trace(())
+    get[Group](s"dataverses/$dvId/groups/$alias")
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#update-group-in-a-dataverse]]
+   * @param groupAlias alias of the group to update
+   * @param s          JSON document with the definition of the group
+   * @return
+   */
+  def updateGroup(groupAlias: String, s: String): Try[DataverseResponse[Group]] = {
+    trace(groupAlias, s)
+    putJson[Group](s"dataverses/$dvId/groups/$groupAlias", s)
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#update-group-in-a-dataverse]]
+   * @param groupAlias alias of the group to update
+   * @param group      model object of the group
+   * @return
+   */
+  def updateGroup(groupAlias: String, group: Group): Try[DataverseResponse[Group]] = {
+    trace(groupAlias, group)
+    for {
+      jsonString <- serializeAsJson(group, logger.underlying.isDebugEnabled)
+      response <- updateGroup(groupAlias, jsonString)
+    } yield response
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-group-from-a-dataverse]]
+   * @param groupAlias alias of the group to delete
+   * @return
+   */
+  def deleteGroup(groupAlias: String): Try[DataverseResponse[DataMessage]] = {
+    trace(groupAlias)
+    deletePath[DataMessage](s"dataverses/$dvId/groups/$groupAlias")
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#add-multiple-role-assignees-to-an-explicit-group]]
+   * @param groupAlias alias of the group
+   * @param assignees  assignees to add
+   * @return
+   */
+  def addRoleAssigneesToGroup(groupAlias: String, assignees: List[String]): Try[DataverseResponse[Group]] = {
+    trace(groupAlias, assignees)
+    postJson[Group](s"dataverses/$dvId/groups/$groupAlias/roleAssignees", assignees.map(a => s""""$a"""").mkString("[", ",", "]"))
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-group-from-a-dataverse]]
+   * @param groupAlias alias of the group
+   * @param assignee   assignee to remove
+   * @return
+   */
+  def deleteAssigneeFromGroup(groupAlias: String, assignee: String): Try[DataverseResponse[Group]] = {
+    trace(groupAlias, assignee)
+    deletePath[Group](s"dataverses/$dvId/groups/$groupAlias/roleAssignees/$assignee")
+  }
 }
