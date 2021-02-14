@@ -142,19 +142,75 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   }
   addSubcommand(addFile)
 
-  // TODO: storage-size
-  // TODO: download-size
-  // TODO: submit-for-review
-  // TODO: return-to-author
-  // TODO: link
-  // TODO: get-locks
-  // TODO: delete
-  // TODO: destroy
-  // TODO: get-storage-driver
-  // TODO: set-storage-driver
-  // TODO: reset-storage-driver
-  // TODO: await-unlock
-  // TODO: await-lock
+  val storageSize = new Subcommand("storage-size") {
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#report-the-data-file-size-of-a-dataset")
+    val includeCached: ScallopOption[Boolean] = opt(name = "include-cached", descr = "whether to include cached metadata etc in the storage size")
+  }
+  addSubcommand(storageSize)
+
+  val downloadSize = addSimpleCommand(
+    name = "download-size",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#get-the-size-of-downloading-all-the-files-of-a-dataset-version"
+  )
+
+  val submitForReview = addSimpleCommand(
+    name = "submit-for-review",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#submit-a-dataset-for-review"
+  )
+
+  val returnToAuthor = new Subcommand("return-to-author") {
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#return-a-dataset-to-author")
+    val reason: ScallopOption[String] = trailArg(name = "reason", descr = "message from the datamanager detailing why the dataset was returned")
+  }
+  addSubcommand(returnToAuthor)
+
+  val link = new Subcommand("link") {
+    descr("See: https://guides.dataverse.org/en/latest/api/native-api.html#link-a-dataset")
+    val targetDataverse: ScallopOption[String] = trailArg(name = "target-dataverse", descr = "alias of the dataverse where the link must be placed")
+  }
+  addSubcommand(link)
+
+  val getLocks = addSimpleCommand(
+    name = "get-locks",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#dataset-locks"
+  )
+
+  val delete = addSimpleCommand(
+    name = "delete",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-unpublished-dataset"
+  )
+
+  val destroy = addSimpleCommand(
+    name = "destroy",
+    description = "See: https://guides.dataverse.org/en/latest/api/native-api.html#delete-published-dataset"
+  )
+
+  val getStorageDriver = addSimpleCommand(
+    name = "get-storage-driver",
+    description = "See: https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store"
+  )
+
+  val setStorageDriver = new Subcommand("set-storage-driver") {
+    descr("See: https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store")
+    val driver: ScallopOption[String] = trailArg(name = "driver", descr = "label of the driver to use")
+  }
+  addSubcommand(setStorageDriver)
+
+  val resetStorageDriver = addSimpleCommand(
+    name = "reset-storage-driver",
+    description = "See: https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store"
+  )
+
+  val awaitLock = new Subcommand("await-lock") {
+    descr("Waits for a specific lock to be set")
+    val lockType: ScallopOption[String] = trailArg(name = "lock-type", descr = "the lock type to wait for")
+  }
+  addSubcommand(awaitLock)
+
+  val awaitUnlock = addSimpleCommand(
+    name = "await-unlock",
+    description = "Wait for all locks to be removed"
+  )
 
   footer(subCommandFooter)
 }

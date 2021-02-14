@@ -429,7 +429,7 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
   // TODO: metrics. First install/enable Make Data Count ?
 
   /**
-   * Note: delete on a published dataset also works, if you are a superuser. Not clear why there is a separate destroy API as well.
+   * Note: delete on a published dataset with one version also works, if you are a superuser.
    *
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-unpublished-dataset]]
    * @return

@@ -338,7 +338,6 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
     else Some(s"${ dataset.datasetVersion.protocol.get }:${ dataset.datasetVersion.authority.get }/${ dataset.datasetVersion.identifier.get }")
   }
 
-  // TODO: importDataset(jsonFile)
   // TODO: importDataset(ddiFile)
 
   /**
@@ -365,5 +364,4 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
   // TODO: add-role-assignee-to-group
   // TODO: add-multiple-role-assignees-to-group
   // TODO: remove-role-assignee-from-group
-
 }

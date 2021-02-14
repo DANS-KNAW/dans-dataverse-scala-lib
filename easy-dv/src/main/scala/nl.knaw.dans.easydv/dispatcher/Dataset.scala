@@ -51,13 +51,13 @@ object Dataset extends DebugEnhancedLogging {
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "export-metadata"
         }
-        else {
-          for {
-            response <- d.exportMetadata(c.format())
-            s <- response.string
-            _ = resultOutput.println(s)
-          } yield "export-metadata"
-        }
+             else {
+               for {
+                 response <- d.exportMetadata(c.format())
+                 s <- response.string
+                 _ = resultOutput.println(s)
+               } yield "export-metadata"
+             }
       case commandLine.dataset :: commandLine.dataset.listFiles :: Nil =>
         for {
           response <- d.listFiles(datasetSetVersion.getOrElse(Version.LATEST))
@@ -110,7 +110,8 @@ object Dataset extends DebugEnhancedLogging {
         if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
         else {
           for {
-            response <- d.publish(updateType = if (c.major()) UpdateType.major else UpdateType.minor)
+            response <- d.publish(updateType = if (c.major()) UpdateType.major
+                                               else UpdateType.minor)
             json <- response.json
             _ = resultOutput.println(Serialization.writePretty(json))
           } yield "publish"
@@ -209,18 +210,94 @@ object Dataset extends DebugEnhancedLogging {
           json <- response.json
           _ = resultOutput.println(Serialization.writePretty(json))
         } yield "add-file"
-
-      // TODO: storage-size
-      // TODO: download-size
-      // TODO: submit-for-review
-      // TODO: return-to-author
-      // TODO: link
-      // TODO: get-locks
-      // TODO: delete
-      // TODO: destroy
-      // TODO: await-unlock
-      // TODO: await-lock
-
+      case commandLine.dataset :: (c @ commandLine.dataset.storageSize) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.getStorageSize(c.includeCached())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "storage-size"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.downloadSize) :: Nil =>
+        for {
+          response <- d.getDownloadSize(datasetSetVersion.getOrElse(Version.LATEST))
+          json <- response.json
+          _ = resultOutput.println(Serialization.writePretty(json))
+        } yield "download-size"
+      case commandLine.dataset :: commandLine.dataset.submitForReview :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.submitForReview()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "submit-for-review"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.returnToAuthor) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.returnToAuthor(
+              s"""
+                | {
+                |   "reasonForReturn": "${c.reason()}"
+                | }
+                |""".stripMargin)
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "return-to-author"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.link) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.link(c.targetDataverse())
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "link"
+        }
+      case commandLine.dataset :: commandLine.dataset.getLocks :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.getLocks
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "get-locks"
+        }
+      case commandLine.dataset :: commandLine.dataset.delete :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.delete()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "delete"
+        }
+      case commandLine.dataset :: commandLine.dataset.destroy :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            response <- d.destroy()
+            json <- response.json
+            _ = resultOutput.println(Serialization.writePretty(json))
+          } yield "destroy"
+        }
+      case commandLine.dataset :: (c @ commandLine.dataset.awaitLock) :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            _ <- d.awaitLock(c.lockType())
+          } yield "await-lock"
+        }
+      case commandLine.dataset :: commandLine.dataset.awaitUnlock :: Nil =>
+        if (datasetSetVersion.isDefined) Failure(new IllegalArgumentException("Versions not supported for this subcommand"))
+        else {
+          for {
+            _ <- d.awaitUnlock()
+          } yield "await-unlock"
+        }
       case _ => Failure(new RuntimeException(s"Unkown dataverse sub-command: ${ commandLine.args.tail.mkString(" ") }"))
     }
   }
