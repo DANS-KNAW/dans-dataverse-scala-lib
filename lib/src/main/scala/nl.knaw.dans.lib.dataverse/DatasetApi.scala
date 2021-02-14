@@ -157,7 +157,6 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     updateMetadata(Serialization.write(Map("metadataBlocks" -> metadataBlocks)))
   }
 
-
   /**
    * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified
    * fields must be either currently empty or allow multiple values. Replaces existing data.
@@ -176,7 +175,7 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
    * fields must be either currently empty or allow multiple values.
    *
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#edit-dataset-metadata]]
-   * @param s JSON document containing the edits to perform
+   * @param s       JSON document containing the edits to perform
    * @param replace whether to replace existing values
    * @return
    */
@@ -360,7 +359,7 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
   }
 
   /**
-   * @see [[  https://guides.dataverse.org/en/latest/api/native-api.html#add-a-file-to-a-dataset]]
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#add-a-file-to-a-dataset]]
    * @param optDataFile     optional file data to upload
    * @param optFileMetadata optional metadata for the file
    * @return
@@ -371,11 +370,52 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     addFileItem(optDataFile, optFileMetadata.map(fm => Serialization.write(fm)))
   }
 
-  // TODO: storage-size
-  // TODO: download-size
-  // TODO: submit-for-review
-  // TODO: return-to-author
-  // TODO: link
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#report-the-data-file-size-of-a-dataset]]
+   * @return
+   */
+  def getStorageSize(includeCached: Boolean = false): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    getUnversionedFromTarget[DataMessage]("storagesize", Map("includeCached" -> includeCached.toString))
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#get-the-size-of-downloading-all-the-files-of-a-dataset-version]]
+   * @return
+   */
+  def getDownloadSize(version: Version = Version.LATEST): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    getVersionedFromTarget[DataMessage]("downloadsize", version)
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#submit-a-dataset-for-review]]
+   * @return
+   */
+  def submitForReview(): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    postJsonToTarget[DataMessage]("submitForReview", "")
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#return-a-dataset-to-author]]
+   * @param s JSON document containing the reason for returning the dataset
+   * @return
+   */
+  def returnToAuthor(s: String): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    postJsonToTarget[DataMessage]("returnToAuthor", s)
+  }
+
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#link-a-dataset]]
+   * @param targetDataverse alias of the dataverse in which the link to the dataset should appear
+   * @return
+   */
+  def link(targetDataverse: String): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    putToTarget[DataMessage](s"link/$targetDataverse", "")
+  }
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#dataset-locks]]
@@ -388,8 +428,16 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
 
   // TODO: metrics. First install/enable Make Data Count ?
 
-  // TODO: delete
-
+  /**
+   * Note: delete on a published dataset also works, if you are a superuser. Not clear why there is a separate destroy API as well.
+   *
+   * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-unpublished-dataset]]
+   * @return
+   */
+  def delete(): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    deleteAtTarget[DataMessage]("")
+  }
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#delete-published-dataset]]
@@ -401,10 +449,12 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
   }
 
   /// https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store
+
+  
+
   // TODO: get-storage-driver
   // TODO: set-storage-driver
   // TODO: reset-storage-driver
-
 
   /**
    * Utility function that lets you wait until all locks are cleared before proceeding. Unlike most other functions
@@ -475,6 +525,4 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     else if (!lockState(maybeLocks.get)) Failure(LockException(numberOfTimesTried, waitTimeInMilliseconds, errorMessage))
          else Success(())
   }
-
-
 }

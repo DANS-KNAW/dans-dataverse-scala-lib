@@ -150,6 +150,9 @@ class DatasetSubcommand extends AbstractSubcommand("dataset") {
   // TODO: get-locks
   // TODO: delete
   // TODO: destroy
+  // TODO: get-storage-driver
+  // TODO: set-storage-driver
+  // TODO: reset-storage-driver
   // TODO: await-unlock
   // TODO: await-lock
 
