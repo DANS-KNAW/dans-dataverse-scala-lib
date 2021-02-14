@@ -448,13 +448,33 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     deleteAtTarget[DataMessage]("destroy")
   }
 
-  /// https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store]]
+   * @return
+   */
+  def getStorageDriver: Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    getUnversionedFromTarget[DataMessage]("storageDriver")
+  }
 
-  
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store]]
+   * @see driver the label of the storage driver to use
+   * @return
+   */
+  def setStorageDriver(driver: String): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    putToTarget[DataMessage]("storageDriver", driver)
+  }
 
-  // TODO: get-storage-driver
-  // TODO: set-storage-driver
-  // TODO: reset-storage-driver
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store]]
+   * @return
+   */
+  def resetStorageDriver(): Try[DataverseResponse[DataMessage]] = {
+    trace(())
+    deleteAtTarget[DataMessage]("storageDriver")
+  }
 
   /**
    * Utility function that lets you wait until all locks are cleared before proceeding. Unlike most other functions
