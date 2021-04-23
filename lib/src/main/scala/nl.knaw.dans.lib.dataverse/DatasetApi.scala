@@ -247,6 +247,23 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
   }
 
   /**
+   * Publishes the current draft of an imported dataset as a new version with the original publication date.
+   *
+   * If publish is called shortly after a modification and there is a pre-publication workflow installed, there is a risk of the workflow failing to
+   * start because of an OptimisticLockException. This is caused by Dataverse indexing the dataset on a separate thread. This will appear to the client
+   * as Dataverse silently failing (i.e. returning success but not publishing the dataset). To make sure that indexing has already happened the `assureIsIndexed`
+   * parameter is set to `true`. It will cause Dataverse to fail fast if indexing is still pending.
+   *
+   * @param publicationDateJsonLd original publication date
+   * @param assureIsIndexed       make Dataverse return 409 Conflict if an index action is pending
+   * @return
+   */
+  def releaseMigrated(publicationDateJsonLd: String, assureIsIndexed: Boolean = true) = {
+    trace(publicationDateJsonLd)
+    postJsonToTarget[DatasetPublicationResult]("actions/:releasemigrated", publicationDateJsonLd, Map("Content-Type" -> "application/json-ld", "assureIsIndexed" -> assureIsIndexed.toString))
+  }
+
+  /**
    * Deletes the current draft of a dataset.
    *
    * Note: as of writing this there is a bug in Dataverse (v5.1.1) which causes it to use the literal string `:persistendId` in the response message
