@@ -15,7 +15,6 @@
  */
 package nl.knaw.dans.lib.dataverse.model
 
-import nl.knaw.dans.lib.dataverse.model.dataset.{ CompoundField, ControlledMultipleValueField, ControlledSingleValueField, MetadataField, PrimitiveMultipleValueField, PrimitiveSingleValueField, TYPE_CLASS_COMPOUND, TYPE_CLASS_CONTROLLED_VOCABULARY, TYPE_CLASS_PRIMITIVE }
 import org.json4s.{ CustomSerializer, DefaultFormats, Extraction, Formats, JNull, JObject }
 
 package object search {

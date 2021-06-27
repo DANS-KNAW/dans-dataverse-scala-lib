@@ -15,7 +15,7 @@
  */
 package nl.knaw.dans.lib.dataverse
 
-import nl.knaw.dans.lib.dataverse.model.{ DataMessage, DataverseMessage }
+import nl.knaw.dans.lib.dataverse.model.DataMessage
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.{ DefaultFormats, Formats }
 

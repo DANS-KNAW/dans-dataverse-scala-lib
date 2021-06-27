@@ -32,6 +32,5 @@ package object model {
     type DefaultRole = Value
     val curator, contributor, none = Value
   }
-
 }
 

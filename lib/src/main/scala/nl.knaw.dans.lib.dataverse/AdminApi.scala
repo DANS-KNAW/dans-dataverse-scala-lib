@@ -34,7 +34,6 @@ class AdminApi private[dataverse](configuration: DataverseInstanceConfig) extend
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#list-all-database-settings]]
-   *
    * @return
    */
   def listDatabaseSettings(): Try[DataverseResponse[Map[String, String]]] = {
@@ -285,7 +284,6 @@ class AdminApi private[dataverse](configuration: DataverseInstanceConfig) extend
   // TODO: delete-workflows-whitelist
   // TODO: clear-metrics-cache [db-name]
   // TODO: add-dataverse-role-assignments-to-children
-
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/admin/dataverses-datasets.html#configure-a-dataset-to-store-all-new-files-in-a-specific-file-store]]

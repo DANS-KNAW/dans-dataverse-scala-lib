@@ -88,7 +88,7 @@ class FileApi private[dataverse](filedId: String, isPersistentFileId: Boolean, c
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#replacing-files]]
-   * @param optDataFile           the replacement file
+   * @param optDataFile     the replacement file
    * @param optFileMetadata the replacement metadata
    * @return
    */
@@ -100,7 +100,7 @@ class FileApi private[dataverse](filedId: String, isPersistentFileId: Boolean, c
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#replacing-files]]
-   * @param optDataFile           the replacement file
+   * @param optDataFile     the replacement file
    * @param optFileMetadata the replacement metadata
    * @return
    */
@@ -113,7 +113,6 @@ class FileApi private[dataverse](filedId: String, isPersistentFileId: Boolean, c
    * Replaces a file with a pre-staged file.
    *
    * @see [[https://guides.dataverse.org/en/latest/developers/s3-direct-upload-api.html#replacing-an-existing-file-in-the-dataset]]
-   *
    * @param prestagedFile metadata about the prestaged file
    * @return
    */
@@ -121,7 +120,6 @@ class FileApi private[dataverse](filedId: String, isPersistentFileId: Boolean, c
     trace(prestagedFile)
     replaceFileItem(Option.empty, Option(Serialization.write(prestagedFile)))
   }
-
 
   /**
    * Note: for some reason, the Dataverse's response is not wrapped in the usual envelope here.

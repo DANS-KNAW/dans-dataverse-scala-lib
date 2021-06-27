@@ -17,8 +17,8 @@ package nl.knaw.dans.lib.dataverse
 
 import nl.knaw.dans.lib.dataverse.model.ResumeMessage
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
-import org.json4s.{ DefaultFormats, Formats }
 import org.json4s.native.Serialization
+import org.json4s.{ DefaultFormats, Formats }
 
 import java.net.URI
 import scala.util.Try

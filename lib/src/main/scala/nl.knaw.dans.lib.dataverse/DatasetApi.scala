@@ -399,7 +399,6 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
    * Adds a pre-staged file
    *
    * @see [[https://guides.dataverse.org/en/latest/developers/s3-direct-upload-api.html#adding-the-uploaded-file-to-the-dataset]]
-   *
    * @param prestagedFile metadata about the prestaged file
    * @return
    */
@@ -407,7 +406,6 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     trace(prestagedFile)
     addFileItem(Option.empty, Option(Serialization.write(prestagedFile)))
   }
-
 
   /**
    * @see [[https://guides.dataverse.org/en/latest/api/native-api.html#report-the-data-file-size-of-a-dataset]]
