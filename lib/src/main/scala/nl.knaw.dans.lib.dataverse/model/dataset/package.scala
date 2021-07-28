@@ -16,7 +16,7 @@
 package nl.knaw.dans.lib.dataverse.model
 
 import nl.knaw.dans.lib.dataverse.model.dataset.CompoundField.CompoundFieldValue
-import org.json4s.{ CustomSerializer, DefaultFormats, Extraction, Formats, JNull, JObject }
+import org.json4s.{ CustomSerializer, DefaultFormats, Extraction, Formats, JArray, JNull, JObject, JString, JValue }
 
 package object dataset {
   type MetadataBlocks = Map[String, MetadataBlock]
@@ -52,17 +52,29 @@ package object dataset {
 
   implicit val jsonFormats: Formats = DefaultFormats + MetadataFieldSerializer
 
+  private def isExternalCvocValue(v: JValue): Boolean = v match {
+    case JArray(list) => list.headOption.exists(v => !v.isInstanceOf[JString])
+    case JString(_) => false
+    case _ => true
+  }
+
   object MetadataFieldSerializer extends CustomSerializer[MetadataField](_ => ( {
     case jsonObj: JObject =>
       val multiple = (jsonObj \ "multiple").extract[Boolean]
       val typeClass = (jsonObj \ "typeClass").extract[String]
+      val isExteralCvoc = isExternalCvocValue(jsonObj \ "value")
 
       typeClass match {
-        case TYPE_CLASS_PRIMITIVE if multiple => Extraction.extract[PrimitiveMultipleValueField](jsonObj)
-        case TYPE_CLASS_PRIMITIVE => Extraction.extract[PrimitiveSingleValueField](jsonObj)
+        case TYPE_CLASS_PRIMITIVE if multiple =>
+          if (isExteralCvoc) Extraction.extract[PrimitiveMultipleValueFieldExtCvoc](jsonObj)
+          else Extraction.extract[PrimitiveMultipleValueField](jsonObj)
+        case TYPE_CLASS_PRIMITIVE =>
+          if (isExteralCvoc) Extraction.extract[PrimitiveSingleValueFieldExtCvoc](jsonObj)
+          else Extraction.extract[PrimitiveSingleValueField](jsonObj)
         case TYPE_CLASS_CONTROLLED_VOCABULARY if multiple => Extraction.extract[ControlledMultipleValueField](jsonObj)
         case TYPE_CLASS_CONTROLLED_VOCABULARY => Extraction.extract[ControlledSingleValueField](jsonObj)
         case TYPE_CLASS_COMPOUND => Extraction.extract[CompoundField](jsonObj)
+          // TODO: Implement isExteralCvoc ?
       }
   }, {
     case null => JNull
