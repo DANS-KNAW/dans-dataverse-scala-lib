@@ -280,6 +280,11 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
     } yield response
   }
 
+  /**
+   * @see [[https://guides.dataverse.org/en/latest/developers/dataset-semantic-metadata-api.html]]
+   * @param s the JSONLD document
+   * @return
+   */
   def createDatasetFromJsonLd(s: String): Try[DataverseResponse[Any]] = {
     trace(s)
     postJson[Any](subPath = s"dataverses/$dvId/datasets", s, isJsonLd = true);
