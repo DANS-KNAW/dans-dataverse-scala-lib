@@ -46,10 +46,3 @@ object UpdateDatasetFromJsonLd extends App with DebugEnhancedLogging with BaseAp
   } yield ()
   logger.info(s"result = $result")
 }
-
-
-/*
-{
- "http://schema.org/license": "http://creativecommons.org/licenses/by/4.0"
-}
- */
