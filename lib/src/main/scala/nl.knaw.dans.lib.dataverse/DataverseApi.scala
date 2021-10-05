@@ -280,6 +280,11 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
     } yield response
   }
 
+  def createDatasetFromJsonLd(s: String): Try[DataverseResponse[Any]] = {
+    trace(s)
+    postJson[Any](subPath = s"dataverses/$dvId/datasets", s, isJsonLd = true);
+  }
+
   /**
    * Import a dataset with an existing persistent identifier, which must be provided as a separate parameter. The dataset
    * will be imported as a draft.

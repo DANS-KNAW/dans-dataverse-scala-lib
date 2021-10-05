@@ -147,6 +147,7 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     putToTarget[DatasetVersion]("versions/:draft", s)
   }
 
+
   /**
    * Creates or overwrites the current draft's metadata completely.
    *
@@ -158,6 +159,13 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     trace(metadataBlocks)
     updateMetadata(Serialization.write(Map("metadataBlocks" -> metadataBlocks)))
   }
+
+
+  def updateMetadataFromJsonLd(s: String, replace: Boolean): Try[DataverseResponse[Any]] = {
+    trace(s)
+    putJsonToTarget[Any](endPoint = "metadata", body = s, queryParams = Map("replace" -> replace.toString), isJsonLd = true);
+  }
+
 
   /**
    * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified

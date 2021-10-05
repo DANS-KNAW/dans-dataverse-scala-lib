@@ -143,10 +143,13 @@ private[dataverse] trait HttpSupport extends DebugEnhancedLogging {
   protected def putJson[D: Manifest](subPath: String = null,
                                      body: String = null,
                                      headers: Map[String, String] = Map.empty,
-                                     params: Map[String, String] = Map.empty): Try[DataverseResponse[D]] = {
+                                     params: Map[String, String] = Map.empty,
+                                     isJsonLd: Boolean = false): Try[DataverseResponse[D]] = {
+    val mediaType = if (isJsonLd) MEDIA_TYPE_JSON_LD
+                    else MEDIA_TYPE_JSON
     for {
       uri <- createUri(Option(subPath))
-      response <- putString[D](uri, body, headers ++ Map(HEADER_CONTENT_TYPE -> MEDIA_TYPE_JSON), params)
+      response <- putString[D](uri, body, headers ++ Map(HEADER_CONTENT_TYPE -> mediaType), params)
     } yield response
   }
 
