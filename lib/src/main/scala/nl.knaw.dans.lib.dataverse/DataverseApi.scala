@@ -281,6 +281,16 @@ class DataverseApi private[dataverse](dvId: String, configuration: DataverseInst
   }
 
   /**
+   * @see [[https://guides.dataverse.org/en/latest/developers/dataset-semantic-metadata-api.html]]
+   * @param s the JSONLD document
+   * @return
+   */
+  def createDatasetFromJsonLd(s: String): Try[DataverseResponse[Any]] = {
+    trace(s)
+    postJson[Any](subPath = s"dataverses/$dvId/datasets", s, isJsonLd = true);
+  }
+
+  /**
    * Import a dataset with an existing persistent identifier, which must be provided as a separate parameter. The dataset
    * will be imported as a draft.
    *

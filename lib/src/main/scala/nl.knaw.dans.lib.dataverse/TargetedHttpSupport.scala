@@ -123,6 +123,22 @@ private[dataverse] trait TargetedHttpSupport extends HttpSupport {
       headers = extraHeaders)
   }
 
+  protected def putJsonToTarget[D: Manifest](endPoint: String, body: String, queryParams: Map[String, String] = Map.empty, isJsonLd: Boolean = false): Try[DataverseResponse[D]] = {
+    if (isPersistentId) super.putJson[D](
+      subPath = s"${ targetBase }/:persistentId/${ endPoint }",
+      body,
+      params = Map("persistentId" -> id) ++ queryParams,
+      headers = extraHeaders,
+      isJsonLd = isJsonLd)
+    else super.putJson[D](
+      subPath = s"${ targetBase }/$id/${ endPoint }",
+      body,
+      params = queryParams,
+      headers = extraHeaders,
+      isJsonLd = isJsonLd)
+  }
+
+
   protected def deleteAtTarget[D: Manifest](endPoint: String): Try[DataverseResponse[D]] = {
     if (isPersistentId) super.deletePath[D](
       subPath = s"${ targetBase }/:persistentId/${ endPoint }",

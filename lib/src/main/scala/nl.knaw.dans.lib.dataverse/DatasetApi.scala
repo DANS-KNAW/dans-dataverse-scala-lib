@@ -160,6 +160,17 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
   }
 
   /**
+   * @see [[https://guides.dataverse.org/en/latest/developers/dataset-semantic-metadata-api.html]]
+   * @param s the JSONLD document
+   * @param replace replace existing values if `true` only add values otherwise
+   * @return
+   */
+  def updateMetadataFromJsonLd(s: String, replace: Boolean): Try[DataverseResponse[Any]] = {
+    trace(s)
+    putJsonToTarget[Any](endPoint = "metadata", body = s, queryParams = Map("replace" -> replace.toString), isJsonLd = true);
+  }
+
+  /**
    * Edits the current draft's metadata, adding the fields that do not exist yet. If `replace` is set to `false`, all specified
    * fields must be either currently empty or allow multiple values. Replaces existing data.
    *
