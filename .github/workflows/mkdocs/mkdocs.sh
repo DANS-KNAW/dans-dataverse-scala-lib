@@ -30,6 +30,8 @@ python3 build.py pack
 popd
 echo "DONE installing DANS mkdocs theme."
 
+./add-scaladocs.sh
+
 echo "START deploying docs to GitHub pages..."
 mkdocs gh-deploy --force
 echo "DONE deploying docs to GitHub pages."
