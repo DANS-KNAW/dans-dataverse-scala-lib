@@ -26,7 +26,7 @@ object UpdateDatasetFromJsonLd extends App with DebugEnhancedLogging with BaseAp
   private val result = for {
     response <- server.dataset(persistentId).updateMetadataFromJsonLd(
       """{
-        |"http://schema.org/license": "http://creativecommons.org/publicdomain/zero/1.0"
+        |"http://schema.org/license": "http://dans.knaw.nl/en/about/organisation-and-policy/legal-information/DANSLicence.pdf"
         |}
         |""".stripMargin, replace = true)
     _ = logger.info(s"Raw response message: ${ response.string }")

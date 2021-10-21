@@ -28,6 +28,7 @@ object UpdateFileMetadata extends App with DebugEnhancedLogging with BaseApp {
 
   val fileMetadata = FileMeta(description = Some(description),
     directoryLabel = Some(directoryLabel),
+    label = Some("same-name.txt"),
     restrict = Some(restrict))
 
   val result = for {
