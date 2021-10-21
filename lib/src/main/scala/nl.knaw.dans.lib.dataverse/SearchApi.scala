@@ -41,8 +41,8 @@ class SearchApi private[dataverse](configuration: DataverseInstanceConfig) exten
    * @param query the search query
    * @return
    */
-  def find(query: String): Try[DataverseResponse[SearchResult]] = {
+  def find(query: String, start: Int = 0, perPage: Int = 10, types: List[String] = List("dataset")): Try[DataverseResponse[SearchResult]] = {
     trace(query)
-    get[SearchResult]("search", params = Map("q" -> query))
+    get[SearchResult]("search", params = Map("q" -> query, "start" -> start.toString, "per_page" -> perPage.toString) ++ types.map(v => ("type" -> v)).toMap)
   }
 }
