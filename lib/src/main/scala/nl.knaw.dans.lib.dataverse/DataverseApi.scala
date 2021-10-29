@@ -17,7 +17,7 @@ package nl.knaw.dans.lib.dataverse
 
 import nl.knaw.dans.lib.dataverse.model.DefaultRole.DefaultRole
 import nl.knaw.dans.lib.dataverse.model._
-import nl.knaw.dans.lib.dataverse.model.dataset.DatasetCreationResult
+import nl.knaw.dans.lib.dataverse.model.dataset.{ DatasetCreationResult, Embargo }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 
 import java.net.URI

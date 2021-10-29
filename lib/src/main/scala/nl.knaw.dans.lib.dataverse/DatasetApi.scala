@@ -18,7 +18,7 @@ package nl.knaw.dans.lib.dataverse
 import better.files.File
 import nl.knaw.dans.lib.dataverse.model._
 import nl.knaw.dans.lib.dataverse.model.dataset.UpdateType.UpdateType
-import nl.knaw.dans.lib.dataverse.model.dataset.{ DatasetLatestVersion, DatasetVersion, FieldList, FileList, MetadataBlock, MetadataBlocks, PrivateUrlData }
+import nl.knaw.dans.lib.dataverse.model.dataset.{ DatasetLatestVersion, DatasetVersion, Embargo, FieldList, FileList, MetadataBlock, MetadataBlocks, PrivateUrlData }
 import nl.knaw.dans.lib.dataverse.model.file.FileMeta
 import nl.knaw.dans.lib.dataverse.model.file.prestaged.PrestagedFile
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
@@ -523,6 +523,26 @@ class DatasetApi private[dataverse](datasetId: String, isPersistentDatasetId: Bo
     trace(())
     deleteAtTarget[DataMessage]("storageDriver")
   }
+
+  /**
+   * No link yet, feature yet to be released in Dataverse
+   *
+   * @return
+   */
+  def setEmbargo(embargo: String): Try[DataverseResponse[Any]] = {
+    trace(())
+    postJsonToTarget[Any](endPoint = "files/actions/:set-embargo", body = embargo)
+  }
+
+  /**
+   * No link yet, feature yet to be released in Dataverse
+   * @return
+   */
+  def setEmbargo(embargo: Embargo): Try[DataverseResponse[Any]] = {
+    trace(())
+    postJsonToTarget[Any](endPoint = "files/actions/:set-embargo", body = Serialization.write(embargo))
+  }
+
 
   /**
    * Utility function that lets you wait until all locks are cleared before proceeding. Unlike most other functions
