@@ -4,6 +4,8 @@ MANUAL
 
 Library with classes and functions for interacting with the Dataverse API.
 
+**DEPRECATED: we are migrating our projects to https://github.com/DANS-KNAW/dans-dataverse-client-lib**.
+
 DESCRIPTION
 -----------
 Dataverse is an open source web application to share, preserve, cite, explore, and analyze research data. 
