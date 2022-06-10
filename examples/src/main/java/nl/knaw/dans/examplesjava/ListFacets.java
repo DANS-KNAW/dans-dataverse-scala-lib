@@ -15,8 +15,8 @@
  */
 package nl.knaw.dans.examplesjava;
 
-import nl.knaw.dans.lib.dataverse.DataverseException;
-import nl.knaw.dans.lib.dataverse.DataverseResponse;
+import nl.knaw.dans.lib.scaladv.DataverseException;
+import nl.knaw.dans.lib.scaladv.DataverseResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

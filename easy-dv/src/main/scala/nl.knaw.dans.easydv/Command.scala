@@ -17,7 +17,7 @@ package nl.knaw.dans.easydv
 
 import better.files.File
 import nl.knaw.dans.easydv.dispatcher.{ Admin, Dataset, Dataverse }
-import nl.knaw.dans.lib.dataverse.{ DataverseException, DataverseInstance, Version }
+import nl.knaw.dans.lib.scaladv.{ DataverseException, DataverseInstance, Version }
 import nl.knaw.dans.lib.error.TryExtensions
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 

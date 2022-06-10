@@ -17,7 +17,7 @@ package nl.knaw.dans.easydv.dispatcher
 
 import nl.knaw.dans.easydv.Command.FeedBackMessage
 import nl.knaw.dans.easydv.CommandLineOptions
-import nl.knaw.dans.lib.dataverse.FileApi
+import nl.knaw.dans.lib.scaladv.FileApi
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.{ DefaultFormats, Formats }
 

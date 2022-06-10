@@ -15,7 +15,7 @@
  */
 package nl.knaw.dans.examples
 
-import nl.knaw.dans.lib.dataverse.model.{ Dataverse, DataverseContact, Group }
+import nl.knaw.dans.lib.scaladv.model.{ Dataverse, DataverseContact, Group }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.native.Serialization
 import org.json4s.{ DefaultFormats, Formats }

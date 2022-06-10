@@ -15,7 +15,7 @@
  */
 package nl.knaw.dans.examples
 
-import nl.knaw.dans.lib.dataverse.{ DataverseInstance, DataverseInstanceConfig }
+import nl.knaw.dans.lib.scaladv.{ DataverseInstance, DataverseInstanceConfig }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.apache.commons.configuration.PropertiesConfiguration
 

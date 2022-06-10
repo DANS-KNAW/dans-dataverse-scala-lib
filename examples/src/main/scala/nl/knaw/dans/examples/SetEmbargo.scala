@@ -15,7 +15,7 @@
  */
 package nl.knaw.dans.examples
 
-import nl.knaw.dans.lib.dataverse.model.dataset.Embargo
+import nl.knaw.dans.lib.scaladv.model.dataset.Embargo
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.{ DefaultFormats, Formats }
 
