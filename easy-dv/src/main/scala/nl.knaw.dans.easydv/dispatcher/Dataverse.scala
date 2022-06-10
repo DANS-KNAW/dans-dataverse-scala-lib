@@ -17,8 +17,8 @@ package nl.knaw.dans.easydv.dispatcher
 
 import nl.knaw.dans.easydv.Command.FeedBackMessage
 import nl.knaw.dans.easydv.CommandLineOptions
-import nl.knaw.dans.lib.dataverse.DataverseApi
-import nl.knaw.dans.lib.dataverse.model.DefaultRole
+import nl.knaw.dans.lib.scaladv.DataverseApi
+import nl.knaw.dans.lib.scaladv.model.DefaultRole
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.native.Serialization
 import org.json4s.{ DefaultFormats, Formats }

@@ -15,8 +15,8 @@
  */
 package nl.knaw.dans.examples
 
-import nl.knaw.dans.lib.dataverse.DataverseResponse
-import nl.knaw.dans.lib.dataverse.model.search.{ DatasetResultItem, SearchResult }
+import nl.knaw.dans.lib.scaladv.DataverseResponse
+import nl.knaw.dans.lib.scaladv.model.search.{ DatasetResultItem, SearchResult }
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.{ DefaultFormats, Formats }
 

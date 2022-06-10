@@ -16,7 +16,7 @@
 package nl.knaw.dans.examples
 
 import better.files.File
-import nl.knaw.dans.lib.dataverse.model.file.FileMeta
+import nl.knaw.dans.lib.scaladv.model.file.FileMeta
 import nl.knaw.dans.lib.logging.DebugEnhancedLogging
 import org.json4s.native.Serialization
 import org.json4s.{ DefaultFormats, Formats }

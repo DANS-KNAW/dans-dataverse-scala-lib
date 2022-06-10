@@ -15,8 +15,8 @@
  */
 package nl.knaw.dans.examplesjava;
 
-import nl.knaw.dans.lib.dataverse.DataverseInstance;
-import nl.knaw.dans.lib.dataverse.DataverseInstanceConfig;
+import nl.knaw.dans.lib.scaladv.DataverseInstance;
+import nl.knaw.dans.lib.scaladv.DataverseInstanceConfig;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import scala.Some;
